@@ -1,0 +1,6 @@
+---
+# tasks file for neovim
+- name: Install package neovim from repo
+  pacman:
+    name: neovim
+    state: present

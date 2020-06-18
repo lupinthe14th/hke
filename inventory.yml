@@ -1,0 +1,18 @@
+---
+all:
+  hosts:
+    knalarmpi4001:
+    knalarmpi4002:
+  children:
+    kubernetes:
+      children:
+        workers:
+          hosts:
+            knalarmpi2001:
+            knalarmpi3001:
+        masters:
+          hosts:
+            kmalarmpi3b01:
+    tests:
+      hosts:
+        kmalarmpi4b01:
