@@ -1,0 +1,6 @@
+---
+# tasks file for tmux
+- name: Install package tmux from repo
+  pacman:
+    name: tmux
+    state: present

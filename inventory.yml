@@ -1,0 +1,20 @@
+---
+all:
+  children:
+    kubernetes:
+      children:
+        workers:
+          hosts:
+            knalarmpi2001:
+            knalarmpi3001:
+        masters:
+          hosts:
+            kmalarmpi3b01:
+            kmalarmpi4b01:
+        rooks:
+          hosts:
+            kralarmpi4001:
+            kralarmpi4002:
+    tests:
+      hosts:
+        kmalarmpi4b01:
