@@ -1,0 +1,10 @@
+---
+- hosts: kubernetes
+  vars_files:
+    - ../group_vars/vault.yml
+  become: yes
+  become_method: su
+  vars:
+    ansible_become_pass: "{{ vault_root_pass }}" # from group_vars/vault.yml
+  roles:
+    - ./roles/containerd

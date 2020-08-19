@@ -1,0 +1,63 @@
+---
+# tasks file for roles/containerd
+- name: Install package containerd from repo
+  pacman:
+    name: containerd
+    update_cache: yes
+    state: present
+
+- name: Copy containerd file with owner and permissions
+  copy:
+    src: containerd.conf
+    dest: /etc/modules-load.d/containerd.conf
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Run command modprobe overlay
+  command: modprobe overlay
+
+- name: Run command modprobe br_netfilter
+  command: modprobe br_netfilter
+
+- name: Setup required sysctl params, these persist across reboots.
+  copy:
+    src: 99-kubernetes-cri.conf
+    dest: /etc/sysctl.d/99-kubernetes-cri.conf
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Run command sysctl --system
+  command: sysctl --system
+
+- name: Install package libseccomp from repo
+  pacman:
+    name: libseccomp
+    state: present
+
+- name: Create a /etc/containerd directory if it does not exist
+  file:
+    path: /etc/containerd
+    state: directory
+    mode: '0755'
+
+- name: Run command containerd config default > /etc/containerd/config.toml
+  shell: containerd config default > /etc/containerd/config.toml
+
+- name: Replace "systemd_cgroup = false" to "systemd_cgroup = true" in all line
+  replace:
+    path: /etc/containerd/config.toml
+    regexp: 'systemd_cgroup = false'
+    replace: 'systemd_cgroup = true'
+
+- name: enable service containerd and ensure it is not masked
+  systemd:
+    name: containerd
+    enabled: yes
+    masked: no
+
+- name: Make sure a containerd service is running
+  systemd:
+    state: started
+    name: containerd
